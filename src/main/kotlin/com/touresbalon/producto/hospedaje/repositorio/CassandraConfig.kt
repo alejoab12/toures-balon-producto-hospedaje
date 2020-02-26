@@ -12,7 +12,7 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 class CassandraConfig : AbstractCassandraConfiguration() {
 
     private val KEY_SPACE_NAME = "touresbalon_producto_hospedaje"
-    private val HOST_NAME = "127.0.0.1"
+    private val HOST_NAME = "172.17.0.3"
     private val PORT = 9042
 
     override fun getKeyspaceName(): String = KEY_SPACE_NAME
