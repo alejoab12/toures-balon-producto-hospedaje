@@ -1,6 +1,6 @@
 package com.touresbalon.producto.hospedaje.servicio
 
-import com.datastax.driver.core.LocalDate
+
 import com.touresbalon.producto.hospedaje.componente.UtilidadFecha
 import com.touresbalon.producto.hospedaje.dto.FiltroConsultaHospedajeDisponibleDto
 import com.touresbalon.producto.hospedaje.dto.RegistroHospedajeDto

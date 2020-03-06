@@ -1,6 +1,6 @@
 package com.touresbalon.producto.hospedaje.valueObject
 
-import com.datastax.driver.core.LocalDate
+
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +46,7 @@ class FechaVo(var parm: String) {
     /**
      * Metodo que retorna el parametro de fecha ajustado a LocalDate DE CASSANDRA BD
      */
-    fun getFechaLocalDate(): LocalDate = LocalDate.fromMillisSinceEpoch(fecha.time)
+    //fun getFechaLocalDate(): LocalDate = LocalDate.fromMillisSinceEpoch(fecha.time)
 
 
     /**
