@@ -17,8 +17,8 @@ class RegistrarHospedajeControlador {
 
     @PostMapping("producto/hospedaje")
     fun registrarHospedajeDesde(@RequestBody registroHospedajeDto: RegistroHospedajeDto): ResponseEntity<Any?> {
-        servicioHospedaje.registrarHospedajeDesde(registroHospedajeDto)
-        return ResponseEntity<Any?>(null, HttpStatus.CREATED)
+
+        return ResponseEntity<Any?>(servicioHospedaje.registrarHospedajeDesde(registroHospedajeDto), HttpStatus.CREATED)
     }
 
 }

@@ -5,6 +5,7 @@ import com.touresbalon.producto.hospedaje.dto.RegistroDisponibilidadHospedajeDto
 import com.touresbalon.producto.hospedaje.dto.RespuestaDto
 import com.touresbalon.producto.hospedaje.servicio.ServicioHospedaje
 import com.touresbalon.producto.hospedaje.valueObject.FechaVo
+import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

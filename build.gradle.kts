@@ -30,6 +30,9 @@ dependencies {
     implementation("org.springframework.data:spring-data-cassandra:2.2.4.RELEASE")
     implementation("io.dropwizard.metrics:metrics-core:4.1.2")
     implementation("com.codahale.metrics:metrics-core:3.0.2")
+    implementation("org.springframework.cloud:spring-cloud-starter-config:2.2.1.RELEASE")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.2.1.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

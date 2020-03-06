@@ -8,10 +8,10 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn
 import java.util.*
 
 class DisponibilidadHospedajeDto {
-    lateinit var idHospedaje: UUID
+    lateinit var idHospedaje: String
     var disponible: Boolean = false
     lateinit var fecha: FechaVo
     var disponibilidad: Int = 0
-    lateinit var idTipoHospedaje: UUID
+    lateinit var idTipoHospedaje: String
     var valorHabitacion: Float = 0f
 }

@@ -15,6 +15,7 @@ import com.touresbalon.producto.hospedaje.entidad.TipoHospedaje
 import com.touresbalon.producto.hospedaje.repositorio.DisponibilidadHospedajeRepositorio
 import com.touresbalon.producto.hospedaje.repositorio.HospedajeRepositorio
 import com.touresbalon.producto.hospedaje.repositorio.TipoHospedajeRepositorio
+import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,20 +44,20 @@ class ServicioHospedajeImpl : ServicioHospedaje {
      */
     override fun registrarHospedajeDesde(registroHospedajeDto: RegistroHospedajeDto) {
         var hospedaje = Hospedaje()
-        hospedaje.id = UUID.randomUUID()
+        var listaTipoHospedaje = mutableListOf<TipoHospedaje>()
         hospedaje.idCiudad = registroHospedajeDto.idCiudad
         hospedaje.estrellas = registroHospedajeDto.estrellas
         hospedaje.nombre = registroHospedajeDto.nombre
-        hospedajeRepositorio.insert(hospedaje)
         registroHospedajeDto.tipoHospedaje.forEach {
             var tipoHospedaje = TipoHospedaje()
-            tipoHospedaje.id = UUID.randomUUID()
-            tipoHospedaje.idHospedaje = hospedaje.id
+            tipoHospedaje.id = ObjectId()
             tipoHospedaje.nombre = it.nombre
             tipoHospedaje.nroPersona = it.nroPersona
             tipoHospedaje.orden = it.orden
-            tipoHospedajeRepositorio.insert(tipoHospedaje)
+            listaTipoHospedaje.add(tipoHospedaje)
         }
+        hospedaje.tipoHospedaje = listaTipoHospedaje
+        hospedajeRepositorio.insert(hospedaje)
     }
 
     /**
@@ -64,12 +65,11 @@ class ServicioHospedajeImpl : ServicioHospedaje {
      */
     override fun registrarDisponibilidadHospedajeDesde(disponibilidadHospedajeDto: ParmDisponibilidadHospedajeDto) {
         var disponibilidadHospedaje = DisponibilidadHospedaje()
-        disponibilidadHospedaje.id = UUID.randomUUID()
         disponibilidadHospedaje.disponibilidad = disponibilidadHospedajeDto.disponibilidad
         disponibilidadHospedaje.disponible = disponibilidadHospedajeDto.disponible
-        disponibilidadHospedaje.fecha = disponibilidadHospedajeDto.fecha.getFechaLocalDate()
-        disponibilidadHospedaje.idHospedaje = disponibilidadHospedajeDto.idHospedaje
-        disponibilidadHospedaje.idTipoHospedaje = disponibilidadHospedajeDto.idTipoHospedaje
+        disponibilidadHospedaje.fecha = disponibilidadHospedajeDto.fecha.getFechaAjustada()
+        disponibilidadHospedaje.idHospedaje = ObjectId(disponibilidadHospedajeDto.idHospedaje)
+        disponibilidadHospedaje.idTipoHospedaje = ObjectId(disponibilidadHospedajeDto.idTipoHospedaje)
         disponibilidadHospedaje.valorHabitacion = disponibilidadHospedajeDto.valorHabitacion
         disponibilidadHospedajeRepositorio.insert(disponibilidadHospedaje)
     }
@@ -79,7 +79,7 @@ class ServicioHospedajeImpl : ServicioHospedaje {
      */
     override fun consultaHospedajePor(filtroConsultaHospedajeDisponibleDto: FiltroConsultaHospedajeDisponibleDto): ResponseEntity<Any?> {
         this.filtroConsultaHospedajeDisponibleDto = filtroConsultaHospedajeDisponibleDto
-        val list = hospedajeRepositorio.consultaHospedajeXCiudad(filtroConsultaHospedajeDisponibleDto.idCiudad)
+        val list = hospedajeRepositorio.findByIdCiudad(filtroConsultaHospedajeDisponibleDto.idCiudad)
         var listDisponibilidadHospedajeDto = mutableListOf<DisponibilidadHospedajeDto>()
         val firstOrNull = list.firstOrNull()
         when {
@@ -106,16 +106,16 @@ class ServicioHospedajeImpl : ServicioHospedaje {
             var listTipoHospedaje = mutableListOf<TipoHospedaje>()
             when {
                 cantPersona.toInt() % 2 == 0 -> {
-                    listTipoHospedaje = tipoHospedajeRepositorio.consultarTipoHospedajeDonde(hospedaje.id,
-                            cantPersona.toInt()).toMutableList()
+                    listTipoHospedaje = hospedaje.tipoHospedaje.filter { it.nroPersona == cantPersona.toInt() }.toMutableList()
                 }
                 else -> {
                     val peronsaHabitacionAdicional = cantPersona.toInt() + 1
-                    listTipoHospedaje = tipoHospedajeRepositorio.consultarTipoHospedajeDonde(hospedaje.id,
-                            cantPersona.toInt(), peronsaHabitacionAdicional).toMutableList()
+                    listTipoHospedaje = hospedaje.tipoHospedaje.filter {
+                        it.nroPersona == cantPersona.toInt() ||
+                                it.nroPersona == peronsaHabitacionAdicional
+                    }.toMutableList()
                 }
             }
-
             listaHabitacionDisponibilidadHospedajeDto = validaDisponibilidadDe(listTipoHospedaje,
                     cantPersona,
                     listaHabitacionDisponibilidadHospedajeDto)
@@ -155,7 +155,7 @@ class ServicioHospedajeImpl : ServicioHospedaje {
                                        listaHabitacionDisponibilidadHospedajeDto: MutableList<HabitacionDisponibilidadHospedajeDto>):
             DisponibilidadHospedajeDto {
         var disponibilidadHospedajeDto = DisponibilidadHospedajeDto()
-        disponibilidadHospedajeDto.id = hospedaje.id
+        disponibilidadHospedajeDto.id = hospedaje.id.toString()
         disponibilidadHospedajeDto.estrellas = hospedaje.estrellas
         disponibilidadHospedajeDto.nombre = hospedaje.nombre
         when {
@@ -179,8 +179,8 @@ class ServicioHospedajeImpl : ServicioHospedaje {
             for (fecha in listFecha) {
                 val fechaTipoHospedajeDisponibleDto = FechaTipoHospedajeDisponibleDto()
                 val fechaParse = UtilidadFecha.stringADate(fecha)
-                val listDisponibilidad = disponibilidadHospedajeRepositorio.consultaDisponibilidadPor(tipoHospedaje.id,
-                        LocalDate.fromMillisSinceEpoch(fechaParse.time))
+                val listDisponibilidad = disponibilidadHospedajeRepositorio.findByIdTipoHospedajeAndFecha(tipoHospedaje.id,
+                        fechaParse)
                 when {
                     listDisponibilidad.isNotEmpty() -> {
                         fechaTipoHospedajeDisponibleDto.fecha = fecha
@@ -202,13 +202,13 @@ class ServicioHospedajeImpl : ServicioHospedaje {
      * TipoHospedaje/Hospedaje
      */
     private fun validaFechaTipoHospedajeDisponible(listaTipoHospedajeDisponible: MutableList<TipoHospedajeDisponibleDto>,
-                                           listFechaTipoHospedajeDisponible: MutableList<FechaTipoHospedajeDisponibleDto>,
-                                           tipoHospedaje: TipoHospedaje):
+                                                   listFechaTipoHospedajeDisponible: MutableList<FechaTipoHospedajeDisponibleDto>,
+                                                   tipoHospedaje: TipoHospedaje):
             MutableList<TipoHospedajeDisponibleDto> {
         val tipoHospedajeDisponibleDto = TipoHospedajeDisponibleDto()
         when {
             listFechaTipoHospedajeDisponible.size.equals(listFecha.size) -> {
-                tipoHospedajeDisponibleDto.idTipoHospedaje = tipoHospedaje.id
+                tipoHospedajeDisponibleDto.idTipoHospedaje = tipoHospedaje.id.toHexString()
                 tipoHospedajeDisponibleDto.nombre = tipoHospedaje.nombre
                 tipoHospedajeDisponibleDto.fechaTipoHospedajeDisponibleDto = listFechaTipoHospedajeDisponible
                 listaTipoHospedajeDisponible.add(tipoHospedajeDisponibleDto)

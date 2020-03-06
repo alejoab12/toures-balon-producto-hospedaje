@@ -1,26 +1,24 @@
 package com.touresbalon.producto.hospedaje.entidad
 
 import com.datastax.driver.core.LocalDate
+import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType
 import org.springframework.data.cassandra.core.mapping.Column
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn
 import org.springframework.data.cassandra.core.mapping.Table
+import org.springframework.data.mongodb.core.index.Indexed
+import org.springframework.format.annotation.DateTimeFormat
 import java.util.*
 
-@Table("disponibilidad_hospedaje")
 class DisponibilidadHospedaje {
-    @Column("id_hospedaje")
-    lateinit var idHospedaje: UUID
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    @Id
+    lateinit var id: String
+    lateinit var idHospedaje: ObjectId
     var disponible: Boolean = false
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
-    lateinit var fecha: LocalDate
-    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    lateinit var fecha: Date
     var disponibilidad: Int = 0
-    @Column
-    lateinit var id: UUID
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED, name = "id_tipo_hospedaje")
-    lateinit var idTipoHospedaje: UUID
-    @Column("valor_habitacion")
+    lateinit var idTipoHospedaje: ObjectId
     var valorHabitacion: Float = 0f
 }
