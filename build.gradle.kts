@@ -28,7 +28,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.data:spring-data-cassandra:2.2.4.RELEASE")
     implementation("io.dropwizard.metrics:metrics-core:4.1.2")
     implementation("com.codahale.metrics:metrics-core:3.0.2")
     implementation("org.springframework.cloud:spring-cloud-starter-config:2.2.1.RELEASE")
