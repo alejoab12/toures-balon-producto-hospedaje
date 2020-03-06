@@ -1,4 +1,5 @@
-FROM openjdk:8-jdk-alpine
-ADD build/libs/hospedaje-0.0.1.jar producto_hospedaje.jar
+FROM openjdk:11
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 EXPOSE 8182
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","/app.jar"]
