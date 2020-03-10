@@ -9,7 +9,7 @@ class Hospedaje {
     @Id
     lateinit var id: ObjectId
     @Indexed
-    lateinit var idCiudad: String
+    lateinit var idCiudad: ObjectId
     var estrellas: Int = 0
     lateinit var nombre: String
     lateinit var tipoHospedaje: List<TipoHospedaje>

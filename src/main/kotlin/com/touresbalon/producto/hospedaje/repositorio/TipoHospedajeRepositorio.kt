@@ -2,10 +2,8 @@ package com.touresbalon.producto.hospedaje.repositorio
 
 import com.touresbalon.producto.hospedaje.entidad.TipoHospedaje
 import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.stereotype.Repository
-import java.util.*
 
-@Repository
+
 interface TipoHospedajeRepositorio: MongoRepository<TipoHospedaje, String> {
 
     //@Query("SELECT * FROM tipo_hospedaje WHERE id_hospedaje = :idHospedaje AND nro_persona IN (:nroPersonaUno,:nroPersonaDos)")

@@ -45,7 +45,7 @@ class ServicioHospedajeImpl : ServicioHospedaje {
     override fun registrarHospedajeDesde(registroHospedajeDto: RegistroHospedajeDto) {
         var hospedaje = Hospedaje()
         var listaTipoHospedaje = mutableListOf<TipoHospedaje>()
-        hospedaje.idCiudad = registroHospedajeDto.idCiudad
+        hospedaje.idCiudad = ObjectId(registroHospedajeDto.idCiudad)
         hospedaje.estrellas = registroHospedajeDto.estrellas
         hospedaje.nombre = registroHospedajeDto.nombre
         registroHospedajeDto.tipoHospedaje.forEach {
@@ -79,7 +79,7 @@ class ServicioHospedajeImpl : ServicioHospedaje {
      */
     override fun consultaHospedajePor(filtroConsultaHospedajeDisponibleDto: FiltroConsultaHospedajeDisponibleDto): ResponseEntity<Any?> {
         this.filtroConsultaHospedajeDisponibleDto = filtroConsultaHospedajeDisponibleDto
-        val list = hospedajeRepositorio.findByIdCiudad(filtroConsultaHospedajeDisponibleDto.idCiudad)
+        val list = hospedajeRepositorio.findByIdCiudad(ObjectId(filtroConsultaHospedajeDisponibleDto.idCiudad))
         var listDisponibilidadHospedajeDto = mutableListOf<DisponibilidadHospedajeDto>()
         val firstOrNull = list.firstOrNull()
         when {

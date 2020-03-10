@@ -1,5 +1,7 @@
 package com.touresbalon.producto.hospedaje.dto
 
+import org.bson.types.ObjectId
+
 class RegistroHospedajeDto {
     lateinit var idCiudad: String
     var estrellas: Int = 0
